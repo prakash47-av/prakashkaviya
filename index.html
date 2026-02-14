@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#fce4ec">
+    <title>Will You Be Mine? 💝</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow-x: hidden;
+            height: 100vh;
+            position: relative;
+        }
+
+        /* VS Code Background */
+        .vscode-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1e1e1e 0%, #252526 100%);
+            z-index: 0;
+        }
+
+        .vscode-lines {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0.3;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            color: #858585;
+            padding: 20px;
+            line-height: 1.6;
+            overflow: hidden;
+        }
+
+        /* Floating CSS Window */
+        .css-window {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 350px;
+            background: #1e1e1e;
+            border-radius: 8px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            overflow: hidden;
+            z-index: 5;
+            border: 1px solid #3c3c3c;
+        }
+
+        .css-window-header {
+            background: #2d2d30;
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid #3c3c3c;
+        }
+
+        .css-window-dots {
+            display: flex;
+            gap: 6px;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .dot.red { background: #ff5f56; }
+        .dot.yellow { background: #ffbd2e; }
+        .dot.green { background: #27c93f; }
+
+        .css-window-title {
+            color: #cccccc;
+            font-size: 12px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .css-window-content {
+            padding: 12px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            color: #d4d4d4;
+            line-height: 1.6;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .css-property {
+            color: #9cdcfe;
+        }
+
+        .css-value {
+            color: #ce9178;
+        }
+
+        .css-selector {
+            color: #d7ba7d;
+        }
+
+        /* Main Content Card */
+        .container {
+            position: relative;
+            z-index: 10;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .card {
+            background: #fce4ec;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            position: relative;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .card-header {
+            margin-bottom: 30px;
+        }
+
+        .cat-gif {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 80px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        h2 {
+            color: #c2185b;
+            font-size: 32px;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        p {
+            color: #880e4f;
+            font-size: 18px;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        /* Button Styles */
+        .button-container {
+            position: relative;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .btn {
+            padding: 15px 40px;
+            font-size: 18px;
+            font-weight: 600;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn-yes {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            transform: scale(1);
+        }
+
+        .btn-yes:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-no {
+            background: #ffffff;
+            color: #c2185b;
+            border: 2px solid #c2185b;
+        }
+        
+
+        .btn-no:hover {
+            background: #fff0f5;
+        }
+
+        /* States */
+        .state {
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .state.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Gift Selection */
+        .gift-container {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+
+        .gift-box {
+            width: 120px;
+            height: 140px;
+            background: white;
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            padding: 15px;
+        }
+
+        .gift-box:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .gift-icon {
+            font-size: 50px;
+            margin-bottom: 10px;
+        }
+
+        .gift-label {
+            color: #c2185b;
+            font-size: 14px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        /* Quiz Styles */
+        .quiz-container {
+            margin-top: 30px;
+        }
+
+        .quiz-question {
+            color: #880e4f;
+            font-size: 20px;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .quiz-btn {
+            padding: 15px;
+            background: white;
+            border: 2px solid #c2185b;
+            border-radius: 10px;
+            color: #c2185b;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .quiz-btn:hover {
+            background: #fff0f5;
+            transform: scale(1.02);
+        }
+
+        .quiz-btn.correct {
+            background: #4caf50;
+            color: white;
+            border-color: #4caf50;
+        }
+
+        .quiz-btn.wrong {
+            animation: shake 0.5s;
+            background: #f44336;
+            color: white;
+            border-color: #f44336;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        /* Photo Gallery */
+        .gallery-header {
+            color: #2c2c2c;
+            font-size: 36px;
+            margin-bottom: 30px;
+            font-weight: 700;
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            margin-top: 30px;
+            padding: 0 10px;
+        }
+
+        .polaroid {
+            background: #fffef8;
+            padding: 15px;
+            padding-bottom: 50px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+            border-radius: 3px;
+            transition: all 0.3s ease-in-out;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .polaroid:hover {
+            transform: translateY(-5px) rotate(0deg) !important;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+        }
+
+        .polaroid-img {
+            width: 100%;
+            height: 180px;
+            background: linear-gradient(135deg, #ffd6e8 0%, #ffc4d6 100%);
+            border-radius: 2px;
+            display: block;
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+
+        .polaroid-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .polaroid-caption {
+            text-align: center;
+            color: #333;
+            font-size: 16px;
+            font-family: 'Brush Script MT', cursive, 'Dancing Script', cursive;
+            font-style: italic;
+            margin-top: 10px;
+            font-weight: 500;
+        }
+
+        /* Letter View */
+        .letter-content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-top: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            text-align: left;
+            min-height: 200px;
+        }
+
+        .letter-text {
+            color: #880e4f;
+            font-size: 16px;
+            line-height: 1.8;
+            font-family: 'Georgia', serif;
+        }
+
+
+
+        .back-btn {
+            margin-top: 20px;
+            padding: 10px 30px;
+            background: #c2185b;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .back-btn:hover {
+            background: #880e4f;
+            transform: scale(1.05);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            body {
+                overflow-y: auto;
+            }
+
+            .container {
+                height: auto;
+                min-height: 100vh;
+                padding: 10px;
+            }
+
+            .card {
+                padding: 25px 15px;
+                max-width: 100%;
+                margin: 10px 0;
+            }
+
+            h2 {
+                font-size: 22px;
+                line-height: 1.3;
+            }
+
+            p {
+                font-size: 16px;
+            }
+
+            .cat-gif {
+                width: 120px;
+                height: 120px;
+                font-size: 50px;
+                margin-bottom: 15px;
+            }
+
+            .css-window {
+                display: none;
+            }
+
+            .button-container {
+                height: 180px;
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .btn {
+                padding: 15px 35px;
+                font-size: 16px;
+                min-width: 140px;
+                touch-action: manipulation;
+            }
+
+            .btn-no {
+                position: static;
+            }
+
+            .gift-container {
+                gap: 15px;
+                margin-top: 20px;
+            }
+
+            .gift-box {
+                width: 90px;
+                height: 110px;
+                padding: 10px;
+            }
+
+            .gift-icon {
+                font-size: 40px;
+            }
+
+            .gift-label {
+                font-size: 12px;
+            }
+
+            .gallery {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+                padding: 0 5px;
+            }
+
+            .gallery-header {
+                font-size: 24px;
+            }
+
+            .polaroid {
+                padding: 10px;
+                padding-bottom: 40px;
+            }
+
+            .polaroid-img {
+                height: 120px;
+                font-size: 35px;
+            }
+
+            .polaroid-caption {
+                font-size: 14px;
+            }
+
+            .quiz-container {
+                margin-top: 20px;
+            }
+
+            .quiz-question {
+                font-size: 18px;
+            }
+
+            .quiz-btn {
+                padding: 12px;
+                font-size: 14px;
+            }
+
+            .letter-content {
+                padding: 20px;
+                margin-top: 15px;
+            }
+
+            .letter-text {
+                font-size: 15px;
+            }
+
+
+
+            .back-btn {
+                padding: 12px 25px;
+                font-size: 14px;
+                margin-top: 20px;
+                touch-action: manipulation;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .card {
+                padding: 20px 12px;
+            }
+
+            h2 {
+                font-size: 20px;
+            }
+
+            .cat-gif {
+                width: 100px;
+                height: 100px;
+                font-size: 40px;
+            }
+
+            .gallery {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .polaroid-img {
+                height: 200px;
+                font-size: 50px;
+            }
+
+            .gift-container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .gift-box {
+                width: 120px;
+                height: 130px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- VS Code Background -->
+    <div class="vscode-bg">
+        <div class="vscode-lines">
+// Creating something special...<br>
+const proposal = {<br>
+&nbsp;&nbsp;sender: "Your Secret Admirer",<br>
+&nbsp;&nbsp;recipient: "The One I Love",<br>
+&nbsp;&nbsp;message: "Will you be mine?",<br>
+&nbsp;&nbsp;attempts: 0,<br>
+&nbsp;&nbsp;success: false<br>
+};<br><br>
+function askAgain() {<br>
+&nbsp;&nbsp;proposal.attempts++;<br>
+&nbsp;&nbsp;return "Please? 🥺";<br>
+}<br><br>
+// Note: The No button is not an option 😊
+        </div>
+    </div>
+
+    <!-- Floating CSS Window -->
+    <div class="css-window">
+        <div class="css-window-header">
+            <div class="css-window-dots">
+                <div class="dot red"></div>
+                <div class="dot yellow"></div>
+                <div class="dot green"></div>
+            </div>
+            <div class="css-window-title">styles.css</div>
+        </div>
+        <div class="css-window-content">
+<span class="css-selector">.love</span> {<br>
+&nbsp;&nbsp;<span class="css-property">display</span>: <span class="css-value">infinite</span>;<br>
+&nbsp;&nbsp;<span class="css-property">position</span>: <span class="css-value">always</span>;<br>
+&nbsp;&nbsp;<span class="css-property">z-index</span>: <span class="css-value">9999</span>;<br>
+}<br><br>
+<span class="css-selector">.yes-button</span> {<br>
+&nbsp;&nbsp;<span class="css-property">transform</span>: <span class="css-value">scale(1.5)</span>;<br>
+&nbsp;&nbsp;<span class="css-property">cursor</span>: <span class="css-value">pointer</span>;<br>
+}<br><br>
+<span class="css-selector">.no-button</span> {<br>
+&nbsp;&nbsp;<span class="css-property">visibility</span>: <span class="css-value">hidden</span>;<br>
+}
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="card">
+            <!-- State 1: Proposal -->
+            <div id="state-proposal" class="state active">
+                <div class="card-header">
+                    <div class="cat-gif">🐱💕</div>
+                    <h2>Enna Love pannuriya?</h2>
+                    <p>I've been thinking about this for a while... and I just had to ask! 💝</p>
+                </div>
+                <div class="button-container">
+                    <button class="btn btn-yes" id="yesBtn">Yes! 💖</button>
+                    <button class="btn btn-no" id="noBtn">No</button>
+                </div>
+            </div>
+
+            <!-- State 2: Gift Selection -->
+            <div id="state-gifts" class="state">
+                <div class="card-header">
+                    <div class="cat-gif">🎁✨</div>
+                    <h2>Yay! Pick Your Gift! 🎉</h2>
+                    <p>I've prepared something special for you.</p>
+                </div>
+                <div class="gift-container">
+                    <div class="gift-box" data-gift="quiz">
+                        <div class="gift-icon">❓</div>
+                        <div class="gift-label">A Quiz About Us</div>
+                    </div>
+                    <div class="gift-box" data-gift="letter">
+                        <div class="gift-icon">💌</div>
+                        <div class="gift-label">Love Letter</div>
+                    </div>
+                    <div class="gift-box" data-gift="gallery">
+                        <div class="gift-icon">📸</div>
+                        <div class="gift-label">Memory Gallery</div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- State 3a: Quiz -->
+            <div id="state-quiz" class="state">
+                <div class="card-header">
+                    <div class="cat-gif">🤔💭</div>
+                    <h2>How Well Do You Know Me?</h2>
+                </div>
+                <div class="quiz-container">
+                    <div class="quiz-question">na unakku yaru ?</div>
+                    <div class="quiz-options">
+                        <button class="quiz-btn" data-correct="false">lover </button>
+                        <button class="quiz-btn" data-correct="true"> All of these💕</button>
+                        <button class="quiz-btn" data-correct="false">friend </button>
+                        <button class="quiz-btn" data-correct="false">2 nd father</button>
+                    </div>
+                </div>
+                <button class="back-btn" onclick="goToState('state-gifts')">← Back to Gifts</button>
+            </div>
+
+            <!-- State 3b: Letter -->
+            <div id="state-letter" class="state">
+                <div class="card-header">
+                    <div class="cat-gif">💌💖</div>
+                    <h2>A Letter For You</h2>
+                </div>
+                <div class="letter-content">
+                    <div class="letter-text" id="letterText"></div>
+                </div>
+                <button class="back-btn" onclick="goToState('state-gifts')">← Back to Gifts</button>
+            </div>
+
+            <!-- State 3c: Gallery -->
+            <div id="state-gallery" class="state">
+                <h2 class="gallery-header">Look at this cutie 🥰</h2>
+                <div class="gallery">
+                    <div class="polaroid">
+                        <div class="polaroid-img"><img src="2.jpeg" alt="Sweet Hello"></div>
+                        <div class="polaroid-caption">Sweet Hello</div>
+                    </div>
+                    <div class="polaroid">
+                        <div class="polaroid-img"><img src="1.jpeg" alt="True Smile"></div>
+                        <div class="polaroid-caption">birthday pic</div>
+                    </div>
+                    <div class="polaroid">
+                        <div class="polaroid-img"><img src="3.jpeg" alt="Perfect Day"></div>
+                        <div class="polaroid-caption">first coffee</div>
+                    </div>
+                    <div class="polaroid">
+                        <div class="polaroid-img"><img src="12.jpeg" alt="Only Us"></div>
+                        <div class="polaroid-caption">Most Beautiful Moment</div>
+                    </div>
+                    <div class="polaroid">
+                        <div class="polaroid-img"><img src="5.jpeg" alt="My Home"></div>
+                        <div class="polaroid-caption">i love you</div>
+                    </div>
+                    <div class="polaroid">
+                        <div class="polaroid-img"><img src="6.jpeg" alt="Forever Us"></div>
+                        <div class="polaroid-caption">purusan & pondati</div>
+                    </div>
+                </div>
+                <button class="back-btn" onclick="goToState('state-gifts')">← Back to Gifts</button>
+            </div>
+
+
+        </div>
+    </div>
+
+    <script>
+        let yesScale = 1;
+        let noMoveCount = 0;
+        const yesBtn = document.getElementById('yesBtn');
+        const noBtn = document.getElementById('noBtn');
+        const card = document.querySelector('.card');
+
+        // Function to move No button
+        function moveNoButton() {
+            noMoveCount++;
+            
+            // Grow Yes button
+            yesScale += 0.2;
+            yesBtn.style.transform = `scale(${yesScale})`;
+            yesBtn.style.zIndex = '999';
+            
+            // Move No button
+            const cardRect = card.getBoundingClientRect();
+            const btnRect = noBtn.getBoundingClientRect();
+            
+            const maxX = cardRect.width - btnRect.width - 40;
+            const maxY = 150;
+            
+            const randomX = Math.random() * maxX;
+            const randomY = Math.random() * maxY;
+            
+            noBtn.style.left = randomX + 'px';
+            noBtn.style.top = randomY + 'px';
+            
+            // Update messages in the header
+            const messages = [
+                "Are you sure? 🥺",
+                "Please reconsider! 💔",
+                "The Yes button is getting bigger... 👀",
+                "Maybe just click Yes? 💝",
+                "I promise it'll be fun! 🎉"
+            ];
+            
+            if (noMoveCount <= messages.length) {
+                const p = document.querySelector('#state-proposal p');
+                p.textContent = messages[noMoveCount - 1];
+            }
+        }
+
+        // Evasive No Button - works for both mouse and touch
+        noBtn.addEventListener('mouseenter', moveNoButton);
+        noBtn.addEventListener('touchstart', function(e) {
+            e.preventDefault();
+            moveNoButton();
+        });
+
+        // Yes Button Click
+        yesBtn.addEventListener('click', function() {
+            // Celebration effect
+            yesBtn.textContent = '🎉 Yay! 🎉';
+            setTimeout(() => {
+                goToState('state-gifts');
+            }, 800);
+        });
+
+        // State Management
+        function goToState(stateId) {
+            const states = document.querySelectorAll('.state');
+            states.forEach(state => state.classList.remove('active'));
+            document.getElementById(stateId).classList.add('active');
+        }
+
+        // Gift Selection
+        document.querySelectorAll('.gift-box').forEach(box => {
+            box.addEventListener('click', function() {
+                const gift = this.getAttribute('data-gift');
+                
+                if (gift === 'quiz') {
+                    goToState('state-quiz');
+                } else if (gift === 'letter') {
+                    goToState('state-letter');
+                    typewriterEffect();
+                } else if (gift === 'gallery') {
+                    goToState('state-gallery');
+                }
+            });
+        });
+
+        // Quiz Logic
+        document.querySelectorAll('.quiz-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const isCorrect = this.getAttribute('data-correct') === 'true';
+                
+                if (isCorrect) {
+                    this.classList.add('correct');
+                    this.textContent = '✓ Correct! We\'re perfect together! 💕';
+                    
+                    // Disable all buttons
+                    document.querySelectorAll('.quiz-btn').forEach(b => b.disabled = true);
+                } else {
+                    this.classList.add('wrong');
+                    setTimeout(() => {
+                        this.classList.remove('wrong');
+                    }, 500);
+                }
+            });
+        });
+
+        // Typewriter Effect for Letter
+        function typewriterEffect() {
+            const text = "My Dearest,\n\nFrom the moment I met you, my life changed in the most beautiful way. Every day with you is an adventure, every moment a treasure. You make me laugh when I'm sad, you inspire me to be better, and you fill my heart with so much love.\n\nI can't imagine my life without you in it. You are my best friend, my partner, and my everything.\n\nWith all my love,\nForever Yours 💕";
+            
+            const letterText = document.getElementById('letterText');
+            letterText.textContent = '';
+            
+            let i = 0;
+            const speed = 30;
+            
+            function type() {
+                if (i < text.length) {
+                    letterText.textContent += text.charAt(i);
+                    i++;
+                    setTimeout(type, speed);
+                }
+            }
+            
+            type();
+        }
+
+        // Polaroid hover effects - random slight rotations
+        document.querySelectorAll('.polaroid').forEach((polaroid, index) => {
+            const rotations = [-3, 2, -2, 4, -4, 3];
+            polaroid.style.transform = `rotate(${rotations[index]}deg)`;
+            
+            polaroid.addEventListener('mouseenter', function() {
+                this.style.transform = `rotate(0deg) scale(1.02)`;
+                this.style.zIndex = '10';
+            });
+            
+            polaroid.addEventListener('mouseleave', function() {
+                this.style.transform = `rotate(${rotations[index]}deg) scale(1)`;
+                this.style.zIndex = '1';
+            });
+        });
+    </script>
+</body>
+</html>
